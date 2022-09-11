@@ -14,6 +14,7 @@ public class Doid : MonoBehaviour
     public GameObject Food;
     public GameObject Worldd;
     public World world;
+    public random rand;
     public UnityEngine.Rendering.Universal.Light2D light;
 
     public float width;
@@ -81,9 +82,12 @@ public class Doid : MonoBehaviour
 
     void Start()
     {
-        dir = UnityEngine.Random.Range(0f, 1f);
+
+        
         Worldd = GameObject.FindWithTag("World");
         world = Worldd.GetComponent<World>();
+        rand = Worldd.GetComponent<random>();
+        dir = rand.range(0f, 1f);
         foodEaten = 0;
         justAte = false;
         age = 0;
@@ -91,8 +95,8 @@ public class Doid : MonoBehaviour
         eatingDistance = radius * eatingFraction;
         ageMax = growthRate * 4500;
         health = maxHealth;
-        Vector2 Direction = (new Vector2(UnityEngine.Random.value, UnityEngine.Random.value)).normalized;
-        doid.Rotate(0, 0, UnityEngine.Random.Range(0, 100) / 100);
+        Vector2 Direction = (new Vector2(rand.value(), rand.value())).normalized;
+        doid.Rotate(0, 0, rand.range(0, 100) / 100);
         sounds = new float[numRays];
         sizes = new float[numRays];
         ageBirthChance = birthChance;
@@ -355,34 +359,34 @@ public class Doid : MonoBehaviour
             //baby.GetComponent<Brain>().mutate(brain.connections, brain.mutationRate/Sigmoid(age * 25));
             baby.GetComponent<Brain>().adjMutate(brain.connections(), brain.mutationRate * (1 - age / ageMax));
 
-            float newRadius = radius + UnityEngine.Random.Range(-radiusMutation, radiusMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age/ageMax)  && newRadius >= radiusMin && newRadius <= radiusMax)
+            float newRadius = radius + rand.range(-radiusMutation, radiusMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age/ageMax)  && newRadius >= radiusMin && newRadius <= radiusMax)
             {
                 baby.GetComponent<Doid>().radius = newRadius;
             } else { baby.GetComponent<Doid>().radius = radius; }
 
-            float newForceMax = forceMax + UnityEngine.Random.Range(-forceMutation, forceMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newForceMax >= 0 && newForceMax <= world.forceMax)
+            float newForceMax = forceMax + rand.range(-forceMutation, forceMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newForceMax >= 0 && newForceMax <= world.forceMax)
             {
                 baby.GetComponent<Doid>().forceMax = newForceMax;
             } else { baby.GetComponent<Doid>().forceMax = forceMax; }
 
-            float newBirthCost = birthCost + UnityEngine.Random.Range(-birthMutation, birthMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newBirthCost >= birthMin && newBirthCost <= energyMax)
+            float newBirthCost = birthCost + rand.range(-birthMutation, birthMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newBirthCost >= birthMin && newBirthCost <= energyMax)
             {
                 baby.GetComponent<Doid>().birthCost = newBirthCost;
             }
             else { baby.GetComponent<Doid>().birthCost = birthCost; }
 
-            float newWidth = width + UnityEngine.Random.Range(-.01f, .01f);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newWidth >= world.widthMin && newWidth <= world.widthMax)
+            float newWidth = width + rand.range(-.01f, .01f);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newWidth >= world.widthMin && newWidth <= world.widthMax)
             {
                 baby.GetComponent<Doid>().width = newWidth;
             }
             else { baby.GetComponent<Doid>().width = width; }
 
-            float newHeight = height + UnityEngine.Random.Range(-.01f, .01f);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newHeight>= world.heightMin && newHeight <= world.heightMax)
+            float newHeight = height + rand.range(-.01f, .01f);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newHeight>= world.heightMin && newHeight <= world.heightMax)
             {
                 baby.GetComponent<Doid>().height = newHeight;
             }
@@ -393,7 +397,7 @@ public class Doid : MonoBehaviour
 
             baby.GetComponent<Doid>().energy = birthCost / 2;
 
-            Vector3 newColor = (new Vector3(light.color[0] + UnityEngine.Random.Range(-.25f, .25f), light.color[1] + UnityEngine.Random.Range(-.25f, .25f), light.color[2] + UnityEngine.Random.Range(-.25f, .25f))).normalized;
+            Vector3 newColor = (new Vector3(light.color[0] + rand.range(-.25f, .25f), light.color[1] + rand.range(-.25f, .25f), light.color[2] + rand.range(-.25f, .25f))).normalized;
             baby.GetComponent<Doid>().light.color = new Color(newColor.x, newColor.y, newColor.z, 0);
 
             baby.GetComponent<Doid>().doid.localScale = new Vector3(baby.GetComponent<Doid>().height / 3, baby.GetComponent<Doid>().width / 3, 1);
@@ -422,38 +426,38 @@ public class Doid : MonoBehaviour
             {
                 baby.GetComponent<Doid>().radius = radiusMin;
             }
-            float newRadius = baby.GetComponent<Doid>().radius + UnityEngine.Random.Range(-radiusMutation, radiusMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newRadius >= radiusMin && newRadius <= radiusMax)
+            float newRadius = baby.GetComponent<Doid>().radius + rand.range(-radiusMutation, radiusMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newRadius >= radiusMin && newRadius <= radiusMax)
             {
                 baby.GetComponent<Doid>().radius = newRadius;
             }
 
 
             baby.GetComponent<Doid>().forceMax = (Male.GetComponent<Doid>().forceMax + forceMax) / 2;
-            float newForceMax = baby.GetComponent<Doid>().forceMax + UnityEngine.Random.Range(-forceMutation, forceMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newForceMax >= 0 && newForceMax <= world.forceMax)
+            float newForceMax = baby.GetComponent<Doid>().forceMax + rand.range(-forceMutation, forceMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newForceMax >= 0 && newForceMax <= world.forceMax)
             {
                 baby.GetComponent<Doid>().forceMax = newForceMax;
             }
 
 
             baby.GetComponent<Doid>().birthCost = (Male.GetComponent<Doid>().birthCost + birthCost) / 2;
-            float newBirthCost = baby.GetComponent<Doid>().birthCost + UnityEngine.Random.Range(-birthMutation, birthMutation);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newBirthCost >= 0 && newBirthCost <= world.forceMax)
+            float newBirthCost = baby.GetComponent<Doid>().birthCost + rand.range(-birthMutation, birthMutation);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newBirthCost >= 0 && newBirthCost <= world.forceMax)
             {
                 baby.GetComponent<Doid>().birthCost = newBirthCost;
             }
 
             baby.GetComponent<Doid>().width = (Male.GetComponent<Doid>().width + width) / 2;
-            float newWidth = baby.GetComponent<Doid>().width + UnityEngine.Random.Range(-.01f, .01f);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newWidth >= world.widthMin && newWidth <= world.widthMax)
+            float newWidth = baby.GetComponent<Doid>().width + rand.range(-.01f, .01f);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newWidth >= world.widthMin && newWidth <= world.widthMax)
             {
                 baby.GetComponent<Doid>().width = newWidth;
             }
 
             baby.GetComponent<Doid>().height = (Male.GetComponent<Doid>().height + height) / 2;
-            float newHeight = baby.GetComponent<Doid>().height + UnityEngine.Random.Range(-.01f, .01f);
-            if (UnityEngine.Random.Range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newHeight >= world.heightMin && newHeight <= world.heightMax)
+            float newHeight = baby.GetComponent<Doid>().height + rand.range(-.01f, .01f);
+            if (rand.range(0f, 100f) < brain.mutationRate * 100 * (1 - age / ageMax) && newHeight >= world.heightMin && newHeight <= world.heightMax)
             {
                 baby.GetComponent<Doid>().height = newHeight;
             }
@@ -545,7 +549,7 @@ public class Doid : MonoBehaviour
         //Debug.DrawLine(pos, pos + newForce / (forceMax * 4 * 35) , Color.black);
         
 
-        if (UnityEngine.Random.Range(0f, 100f) < outputs[2]*ageBirthChance && (energy - birthCost) > 0 && GameObject.FindGameObjectsWithTag("Doid").Length < world.doidMax && age > ageFoodRatio * 2)
+        if (rand.range(0f, 100f) < outputs[2]*ageBirthChance && (energy - birthCost) > 0 && GameObject.FindGameObjectsWithTag("Doid").Length < world.doidMax && age > ageFoodRatio * 2)
         {
             aSex();
             lastBirthAge = age;

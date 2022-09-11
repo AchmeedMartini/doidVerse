@@ -13,6 +13,7 @@ public class start : MonoBehaviour
     public GameObject mapSize;
     public GameObject caveSize;
     public GameObject mapSeed;
+    public GameObject simSeed;
 
 
     void Start()
@@ -38,6 +39,7 @@ public class start : MonoBehaviour
         mapSize.SetActive(false);
         caveSize.SetActive(false);
         mapSeed.SetActive(false);
+        simSeed.SetActive(false);
         menu.enabled = false;
         startButton.enabled = false;
         this.enabled = false;
@@ -45,6 +47,7 @@ public class start : MonoBehaviour
 
     void TaskOnClick()
     {
+        Debug.Log(world.GetComponent<World>().randomValue());
         inputParams();
         clearMenu();
         world.GetComponent<mapGen>().genMap();

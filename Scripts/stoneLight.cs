@@ -29,7 +29,7 @@ public class stoneLight : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(UnityEngine.Random.Range(0,100) < 15)
+        if (Random.Range(0,100) < 15)
         {
             Color average = nearestSpawnerColor();
             this.GetComponent<SpriteRenderer>().color = average;

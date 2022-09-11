@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class World : MonoBehaviour
 {
+    public random rand;
     public int doidMin = 100;
     public int doidMax = 500;
     public int foodMin = 100;
@@ -41,6 +42,21 @@ public class World : MonoBehaviour
     float y;
     float x;
 
+    public float randomValue()
+    {
+        return rand.value();
+    } 
+
+    public int randomRange(int start, int end)
+    {
+        return rand.range(start, end);
+    }
+
+    public float randomRange(float start, float end)
+    {
+        return rand.range(start, end);
+    }
+
     float hashNum(float num)
     {
         var hash = Hash128.Compute(num);
@@ -54,45 +70,35 @@ public class World : MonoBehaviour
 
     public Color color(int species, float age, float ageMax)
     {
-        Vector3 col = new Vector3(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        Vector3 col = new Vector3(randomRange(0, 1f), randomRange(0, 1f), Random.Range(0, 1f));
         Vector4 newCol = (new Vector4(hashNum(species) + col.x, hashNum(species + 1) + col.y, hashNum(species + 2) + col.z, age / ageMax)).normalized * 100;
         return new Color(newCol.x, newCol.y, newCol.z, newCol.w);
     }
 
-    void spawnDoid(int species)
+    public void spawnDoid()
     {
-        //Debug.Log(forceMax);
-        int zone = Random.Range(0, doidZones.Count);
-        Vector2 randDir = (new Vector2(Random.Range(-100, 100), Random.Range(-100, 100))).normalized;
-        Vector2 randVec = randDir * doidZones[zone].Item3 * Random.Range(0f, 1f);
-        Vector3 randPos = (new Vector2(doidZones[zone].Item1, doidZones[zone].Item2)) + randVec;
-        GameObject dude = Instantiate(doid, randPos, Quaternion.identity) as GameObject;
-        dude.GetComponent<Brain>().randomAdjBrain();
-        dude.GetComponent<Brain>().mutationRate = Random.Range(0, mutationRateMax);
-        dude.GetComponent<Brain>().deletionChance = Random.Range(0, deletionChanceMax);
-        dude.GetComponent<Brain>().connectionChance = Random.Range(0, connectionChanceMax);
-        dude.GetComponent<Doid>().light.color = color(species, 0, dude.GetComponent<Doid>().ageMax);
-        dude.GetComponent<Doid>().species = species.ToString();
-        dude.GetComponent<Doid>().radius = Random.Range(dude.GetComponent<Doid>().radiusMin, dude.GetComponent<Doid>().radiusMax);
-        dude.GetComponent<Doid>().birthCost = Random.Range(dude.GetComponent<Doid>().birthMin, dude.GetComponent<Doid>().energyMax);
-        dude.GetComponent<Doid>().forceMax = Random.Range(.01f, forceMax);
-        float height = Random.Range(heightMin, heightMax);
-        float width = Random.Range(widthMin, widthMax);
-        dude.GetComponent<Doid>().height = height;
-        dude.GetComponent<Doid>().width = width;
-        float offset = (heightMax * widthMax) / 2;
-        dude.GetComponent<Doid>().forceMax = forceMax * (1 - ((height * width) / ((heightMax * widthMax) + offset)));
-        dude.GetComponent<Doid>().doid.localScale = new Vector3(dude.GetComponent<Doid>().height, dude.GetComponent<Doid>().width, 1);
-        //TODO: MAKE WIDTH AND HEIGHT SEPERATE VARIABLES AND MAKE MOVE ENERGY BE A FUNCTION OF FORCE AND VOLUME
-    }
-
-    void spawnFood()
-    {
-        int zone = Random.Range(0, foodZones.Count);
-        Vector2 randDir = (new Vector2(Random.Range(-100, 100), Random.Range(-100, 100))).normalized;
-        Vector2 randVec = randDir * foodZones[zone].Item3 * Random.Range(0f, 1f);
-        Vector3 randPos = (new Vector2(foodZones[zone].Item1, foodZones[zone].Item2)) + randVec;
-        Instantiate(food, randPos, Quaternion.identity);
+        if (Input.GetKeyDown("s"))
+        {
+            Vector2 mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+            GameObject dude = Instantiate(doid, mousePosition, Quaternion.identity) as GameObject;
+            dude.GetComponent<Brain>().randomAdjBrain();
+            dude.GetComponent<Brain>().mutationRate = randomRange(0, mutationRateMax);
+            dude.GetComponent<Brain>().deletionChance = randomRange(0, deletionChanceMax);
+            dude.GetComponent<Brain>().connectionChance = randomRange(0, connectionChanceMax);
+            dude.GetComponent<Doid>().light.color = color(speciesCounter, 0, dude.GetComponent<Doid>().ageMax);
+            dude.GetComponent<Doid>().species = speciesCounter.ToString();
+            speciesCounter++;
+            dude.GetComponent<Doid>().radius = randomRange(dude.GetComponent<Doid>().radiusMin, dude.GetComponent<Doid>().radiusMax);
+            dude.GetComponent<Doid>().birthCost = randomRange(dude.GetComponent<Doid>().birthMin, dude.GetComponent<Doid>().energyMax);
+            dude.GetComponent<Doid>().forceMax = randomRange(.01f, forceMax);
+            float height = randomRange(heightMin, heightMax);
+            float width = randomRange(widthMin, widthMax);
+            dude.GetComponent<Doid>().height = height;
+            dude.GetComponent<Doid>().width = width;
+            float offset = (heightMax * widthMax) / 4;
+            dude.GetComponent<Doid>().forceMax = forceMax * (1 - ((height * width) / ((heightMax * widthMax) + offset)));
+            dude.GetComponent<Doid>().doid.localScale = new Vector3(dude.GetComponent<Doid>().height / 3, dude.GetComponent<Doid>().width / 3, 1);
+        }
     }
 
     void Start()
@@ -101,6 +107,7 @@ public class World : MonoBehaviour
         speciesCounter = 0;
         y = mainCamera.orthographicSize * 2;
         x = mainCamera.orthographicSize * 2 * mainCamera.aspect;
+        rand = GetComponent<random>();
         //(float, float, float) foodSpawn = (0, 0, y/2);
         //doidZones.Add(foodSpawn);
         //foodZones.Add(foodSpawn);
@@ -215,6 +222,7 @@ public class World : MonoBehaviour
             Stats.enabled = false;
             selected = null;
         }
+        spawnDoid();
         followDoid(selected);
     }
 }

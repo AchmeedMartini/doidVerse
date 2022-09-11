@@ -9,7 +9,6 @@ public class AdjacencyList
     public int edgesCount;
     public int verticesCount;
 
-
     public List<((string, int), float, int)> AddVertex((string, int) key)
     {
         List<((string, int), float, int)> vertex = new List<((string, int), float, int)>();
@@ -145,8 +144,13 @@ public class AdjacencyList
 
     public ((string, int), (string, int)) randomEdge()
     {
+        
         List<((string, int), (string, int), float, int)> Edges = edges();
-        int index = UnityEngine.Random.Range(0, Edges.Count);
+
+        GameObject worldd = GameObject.FindWithTag("World");
+        random rand = worldd.GetComponent<random>();
+        int index = rand.range(0, Edges.Count);
+
         ((string, int), (string, int), float, int) edge = Edges[index];
 
         return (edge.Item1, edge.Item2);

@@ -18,6 +18,20 @@ public class Brain : MonoBehaviour
     public Dictionary<((string, int), (string, int)), (float, int)> weights;
     public Vector3 col;
 
+    public int randomRange(int start, int end)
+    {
+        GameObject worldd = GameObject.FindWithTag("World");
+        random rand = worldd.GetComponent<random>();
+        return rand.range(start, end);
+    }
+
+    public float randomRange(float start, float end)
+    {
+        GameObject worldd = GameObject.FindWithTag("World");
+        random rand = worldd.GetComponent<random>();
+        return rand.range(start, end);
+    }
+
     public void emptyBrain()
     {
         adjConnections = new AdjacencyList();
@@ -37,7 +51,7 @@ public class Brain : MonoBehaviour
 
     void Start()
     {
-        col = new Vector3(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        col = new Vector3(randomRange(0, 1f), randomRange(0, 1f), randomRange(0, 1f));
     }
 
     public List<(string, int)> nodes()
@@ -48,25 +62,6 @@ public class Brain : MonoBehaviour
     public List<((string, int), (string, int), float, int)> connections()
     {
         return adjConnections.edges();
-    }
-
-    public bool circular((string, int) male, (string, int) female, List<bool> results, List<(string, int)> seen)
-    {
-        if (seen.Contains(male)) { return false; }
-        seen.Add(male);
-        if(male == female) { return true; }
-        foreach(((string, int) otherMale, float weight, int variable) in adjConnections.FindNeighbours(male))
-        {
-            if(otherMale.Item1 == "middle")
-            {
-                results.Add(circular(otherMale, female, results, seen));
-            }
-        }
-        foreach(bool result in results)
-        {
-            if (result) { return true; }
-        }
-        return false;
     }
 
     public (string, int) randomNode(string type)
@@ -84,7 +79,7 @@ public class Brain : MonoBehaviour
                 size = outputSize;
                 break;
         }
-        int index = Random.Range(0, size);
+        int index = randomRange(0, size);
         return (type, index);
     }
 
@@ -98,7 +93,7 @@ public class Brain : MonoBehaviour
         (string, int) male = ("input", 0);
         (string, int) female = ("middle", 0);
 
-        int connectType = Random.Range(0, 4);
+        int connectType = randomRange(0, 4);
 
         if(connectType == 0)
         {
@@ -119,12 +114,12 @@ public class Brain : MonoBehaviour
             female = randomNode("output");
         } 
 
-        float weight = Random.Range(-weightMax, weightMax);
+        float weight = randomRange(-weightMax, weightMax);
         int variable = -1;
 
-        if (Random.Range(0, 100) < variableChance)
+        if (randomRange(0, 100) < variableChance)
         {
-            variable = Random.Range(0, inputSize);
+            variable = randomRange(0, inputSize);
         }
 
         if(adjConnections.edgesCount < connectionMax && !Dupe(male, female))
@@ -138,12 +133,12 @@ public class Brain : MonoBehaviour
     {  
         (string, int) female = randomNode("middle");
         
-        float weight = Random.Range(-weightMax, weightMax);
+        float weight = randomRange(-weightMax, weightMax);
         int variable = -1;
 
-        if (Random.Range(0, 100) < variableChance)
+        if (randomRange(0, 100) < variableChance)
         {
-            variable = Random.Range(0, inputSize);
+            variable = randomRange(0, inputSize);
         }
 
         if (adjConnections.edgesCount < connectionMax && !Dupe(male, female))
@@ -163,7 +158,7 @@ public class Brain : MonoBehaviour
 
         for (int i = 0; i < connectionMax / 3; i++)
         {
-            if (Random.Range(0f, 100f) < (float)connectionChance)
+            if (randomRange(0f, 100f) < (float)connectionChance)
             {
                 randomAdjConnection();
             }
@@ -218,35 +213,35 @@ public class Brain : MonoBehaviour
         //Mutate Weights
         for (int i = 0; i < mutateRate * 100; i++)
         {
-            if (Random.Range(0f, 100f) < mutateRate * 100)
+            if (randomRange(0f, 100f) < mutateRate * 100)
             {
                 ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                 (float, int) wv = adjConnections.weightVariable(male, female);
 
-                float weight = wv.Item1 + Random.Range(-weightMutation, weightMutation);
+                float weight = wv.Item1 + randomRange(-weightMutation, weightMutation);
                 int variable = wv.Item2;
 
                 if (weight != 0) { adjConnections.editEdge(male, female, weight, variable); }
             }
-            if (Random.Range(0f, 100f) < mutateRate * 50)
+            if (randomRange(0f, 100f) < mutateRate * 50)
             {
                 ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                 (float, int) wv = adjConnections.weightVariable(male, female);
 
-                float weight = Random.Range(-weightMax, weightMax);
+                float weight = randomRange(-weightMax, weightMax);
                 int variable = wv.Item2;
 
                 if (weight != 0) { adjConnections.editEdge(male, female, weight, variable); }
             }
-            if (Random.Range(0f, 100f) < mutateRate * 50)
+            if (randomRange(0f, 100f) < mutateRate * 50)
             {
                 ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                 (float, int) wv = adjConnections.weightVariable(male, female);
 
-                float weight = Random.Range(-weightMax, weightMax);
+                float weight = randomRange(-weightMax, weightMax);
                 int variable = wv.Item2;
 
                 if (weight == 0) { adjConnections.editEdge(male, female, weight, variable); }
@@ -256,12 +251,12 @@ public class Brain : MonoBehaviour
         //Add and Delete Random Connections
         for (int i = 0; i < mutateRate * 100; i++)
         {
-            if (Random.Range(0f, 100f) < (float)connectionChance * mutateRate)
+            if (randomRange(0f, 100f) < (float)connectionChance * mutateRate)
             {
                 randomAdjConnection();
             }
 
-            if (Random.Range(0f, 100f) < (float)deletionChance * mutateRate)
+            if (randomRange(0f, 100f) < (float)deletionChance * mutateRate)
             {
                 ((string, int) male, (string, int) female) = adjConnections.randomEdge();
                 (float, int) wv = adjConnections.weightVariable(male, female);
@@ -280,7 +275,7 @@ public class Brain : MonoBehaviour
 
             for (int i = 0; i < numConnections; i++)
             {
-                if (Random.Range(0, 100) < 50)
+                if (randomRange(0, 100) < 50)
                 {
                     ((string, int), (string, int), float, int) newConnection = femaleConnections[i];
                     adjConnections.AddEdge(newConnection.Item1, newConnection.Item2, newConnection.Item3, newConnection.Item4);
@@ -295,35 +290,35 @@ public class Brain : MonoBehaviour
 
             for (int i = 0; i < mutateRate * 100; i++)
             {
-                if (Random.Range(0f, 100f) < mutateRate * 100)
+                if (randomRange(0f, 100f) < mutateRate * 100)
                 {
                     ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                     (float, int) wv = adjConnections.weightVariable(male, female);
 
-                    float weight = wv.Item1 + Random.Range(-weightMutation, weightMutation);
+                    float weight = wv.Item1 + randomRange(-weightMutation, weightMutation);
                     int variable = wv.Item2;
 
                     if (weight != 0) { adjConnections.editEdge(male, female, weight, variable); }
                 }
-                if (Random.Range(0f, 100f) < mutateRate * 50)
+                if (randomRange(0f, 100f) < mutateRate * 50)
                 {
                     ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                     (float, int) wv = adjConnections.weightVariable(male, female);
 
-                    float weight = Random.Range(-weightMax, weightMax);
+                    float weight = randomRange(-weightMax, weightMax);
                     int variable = wv.Item2;
 
                     if (weight != 0) { adjConnections.editEdge(male, female, weight, variable); }
                 }
-                if (Random.Range(0f, 100f) < mutateRate * 50)
+                if (randomRange(0f, 100f) < mutateRate * 50)
                 {
                     ((string, int) male, (string, int) female) = adjConnections.randomEdge();
 
                     (float, int) wv = adjConnections.weightVariable(male, female);
 
-                    float weight = Random.Range(-weightMax, weightMax);
+                    float weight = randomRange(-weightMax, weightMax);
                     int variable = wv.Item2;
 
                     if (weight == 0) { adjConnections.editEdge(male, female, weight, variable); }
@@ -332,12 +327,12 @@ public class Brain : MonoBehaviour
 
             for (int i = 0; i < mutateRate * 100; i++)
             {
-                if (Random.Range(0f, 100f) < (float)connectionChance * mutateRate)
+                if (randomRange(0f, 100f) < (float)connectionChance * mutateRate)
                 {
                     randomAdjConnection();
                 }
 
-                if (Random.Range(0f, 100f) < (float)deletionChance * mutateRate)
+                if (randomRange(0f, 100f) < (float)deletionChance * mutateRate)
                 {
                     ((string, int) male, (string, int) female) = adjConnections.randomEdge();
                     (float, int) wv = adjConnections.weightVariable(male, female);
@@ -365,5 +360,4 @@ public class Brain : MonoBehaviour
         Vector4 newCol = ((new Vector4(hashNum(species) + col.x, hashNum(species + 1)  + col.y, hashNum(species + 2) + col.z, age  / ageMax ))).normalized * 100;
         return new Color(newCol.x, newCol.y, newCol.z, newCol.w);
     }
-
 }

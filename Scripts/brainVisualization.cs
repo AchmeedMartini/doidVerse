@@ -96,20 +96,6 @@ public class brainVisualization : MonoBehaviour
 
     }
 
-    public static double Exp(float value)
-    {
-        double val = (double)value;
-        long tmp = (long)(1512775 * val + 1072632447);
-        return BitConverter.Int64BitsToDouble(tmp << 32);
-    }
-
-    static float Sigmoid(float value)
-    {
-        float k = (float)Exp(value);
-        if (float.IsNaN(k)) { return 0; }
-        return k / (1.0f + k);
-    }
-
     Vector2 nodeImgPos((string, int) node)
     {
         Vector2 nodepos = nodePos(node);

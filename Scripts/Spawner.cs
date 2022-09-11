@@ -8,6 +8,7 @@ public class Spawner : MonoBehaviour
     public GameObject doid;
     public GameObject food;
     public GameObject world;
+    public random rand;
 
     public int maxTargets;
 
@@ -21,6 +22,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         world = GameObject.FindWithTag("World");
+        rand = world.GetComponent<random>();
         //targets = new Collider2D[world.GetComponent<World>().doidMin / GameObject.FindGameObjectsWithTag("Spawner").Length];
         maxTargets = world.GetComponent<World>().doidMin / GameObject.FindGameObjectsWithTag("Spawner").Length;
         StartCoroutine(getOut());
@@ -100,7 +102,7 @@ public class Spawner : MonoBehaviour
 
     public Color color(int species, float age, float ageMax)
     {
-        Vector3 col = new Vector3(Random.Range(0, 1f), Random.Range(0, 1f), Random.Range(0, 1f));
+        Vector3 col = new Vector3(rand.range(0, 1f), rand.range(0, 1f), rand.range(0, 1f));
         Vector4 newCol = (new Vector4(hashNum(species) + col.x, hashNum(species + 1) + col.y, hashNum(species + 2) + col.z, age / ageMax)).normalized * 100;
         return new Color(newCol.x, newCol.y, newCol.z, newCol.w);
     }
@@ -116,8 +118,8 @@ public class Spawner : MonoBehaviour
 
     void spawnDoid(int species)
     {
-        Vector2 randDir = (new Vector2(Random.Range(-100, 100), Random.Range(-100, 100))).normalized;
-        Vector2 randVec = randDir * radius * Random.Range(0f, 1f);
+        Vector2 randDir = (new Vector2(rand.range(-100, 100), rand.range(-100, 100))).normalized;
+        Vector2 randVec = randDir * radius * rand.range(0f, 1f);
         Vector2 pos = this.transform.position;
         Vector3 randPos = pos + randVec;
         if (canSee(randVec))
@@ -125,16 +127,16 @@ public class Spawner : MonoBehaviour
             GameObject dude = Instantiate(doid, randPos, Quaternion.identity) as GameObject;
 
             dude.GetComponent<Brain>().randomAdjBrain();
-            dude.GetComponent<Brain>().mutationRate = Random.Range(0, world.GetComponent<World>().mutationRateMax);
-            dude.GetComponent<Brain>().deletionChance = Random.Range(0, world.GetComponent<World>().deletionChanceMax);
-            dude.GetComponent<Brain>().connectionChance = Random.Range(0, world.GetComponent<World>().connectionChanceMax);
+            dude.GetComponent<Brain>().mutationRate = rand.range(0, world.GetComponent<World>().mutationRateMax);
+            dude.GetComponent<Brain>().deletionChance = rand.range(0, world.GetComponent<World>().deletionChanceMax);
+            dude.GetComponent<Brain>().connectionChance = rand.range(0, world.GetComponent<World>().connectionChanceMax);
             dude.GetComponent<Doid>().light.color = color(species, 0, dude.GetComponent<Doid>().ageMax);
             dude.GetComponent<Doid>().species = species.ToString();
-            dude.GetComponent<Doid>().radius = Random.Range(dude.GetComponent<Doid>().radiusMin, dude.GetComponent<Doid>().radiusMax);
-            dude.GetComponent<Doid>().birthCost = Random.Range(dude.GetComponent<Doid>().birthMin, dude.GetComponent<Doid>().energyMax);
-            dude.GetComponent<Doid>().forceMax = Random.Range(.01f, world.GetComponent<World>().forceMax);
-            float height = Random.Range(world.GetComponent<World>().heightMin, world.GetComponent<World>().heightMax);
-            float width = Random.Range(world.GetComponent<World>().widthMin, world.GetComponent<World>().widthMax);
+            dude.GetComponent<Doid>().radius = rand.range(dude.GetComponent<Doid>().radiusMin, dude.GetComponent<Doid>().radiusMax);
+            dude.GetComponent<Doid>().birthCost = rand.range(dude.GetComponent<Doid>().birthMin, dude.GetComponent<Doid>().energyMax);
+            dude.GetComponent<Doid>().forceMax = rand.range(.01f, world.GetComponent<World>().forceMax);
+            float height = rand.range(world.GetComponent<World>().heightMin, world.GetComponent<World>().heightMax);
+            float width = rand.range(world.GetComponent<World>().widthMin, world.GetComponent<World>().widthMax);
             dude.GetComponent<Doid>().height = height;
             dude.GetComponent<Doid>().width = width;
             float offset = (world.GetComponent<World>().heightMax * world.GetComponent<World>().widthMax) / 4;
@@ -158,7 +160,7 @@ public class Spawner : MonoBehaviour
 
     void FixedUpdate()
     {
-        if(Random.Range(0f, 100f) < 2.5f)
+        if(Random.Range(0f, 100f) < 10f)
         {
             light.color = averageColor();
             if (targets.Count < maxTargets && GameObject.FindGameObjectsWithTag("Doid").Length < world.GetComponent<World>().doidMin)

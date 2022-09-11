@@ -9,7 +9,7 @@ public class mapGen : MonoBehaviour
     public int height;
 
     public string seed;
-    public bool useRandomSeed;
+    public bool useRandomSeed = true;
 
     [Range(0, 100)]
     public int randomFillPercent;
@@ -25,11 +25,12 @@ public class mapGen : MonoBehaviour
 
     void Start()
     {
-        //genMap();
+        seed = UnityEngine.Random.Range(0, 10000000000).ToString();
     }
 
     public void changeSeed(string newSeed)
     {
+        useRandomSeed = false;
         seed = newSeed;
     }
 
